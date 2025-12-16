@@ -1,0 +1,40 @@
+{
+  "model_type": "all",
+  "n_samples": 1000,
+  "preprocessing": {
+    "imputation_strategy": "knn",
+    "normalization": "standard",
+    "encoding": "label",
+    "feature_selection": true,
+    "n_features": 50
+  },
+  "xgboost": {
+    "n_estimators": 1000,
+    "max_depth": 6,
+    "learning_rate": 0.01,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "random_state": 42
+  },
+  "lstm": {
+    "hidden_size": 128,
+    "num_layers": 2,
+    "dropout": 0.2,
+    "seq_length": 24,
+    "epochs": 100,
+    "batch_size": 32,
+    "learning_rate": 0.001
+  },
+  "bert": {
+    "model_name": "bert-base-uncased",
+    "epochs": 10,
+    "batch_size": 16,
+    "learning_rate": 2e-5
+  },
+  "evaluation": {
+    "use_shap": true,
+    "use_lime": true,
+    "save_plots": true
+  }
+}
+

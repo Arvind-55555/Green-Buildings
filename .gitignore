@@ -1,0 +1,75 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# Data files
+data/*.csv
+data/*.pkl
+data/*.h5
+data/*.hdf5
+!data/.gitkeep
+
+# Model files
+models/*.pkl
+models/*.pth
+models/*.h5
+models/*.hdf5
+!models/.gitkeep
+
+# Results
+results/*.png
+results/*.pdf
+results/*.txt
+results/*.json
+!results/.gitkeep
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Config (if contains sensitive info)
+# config.json
+
+# Transformers cache
+.cache/
+transformers_cache/
+

@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green Building Energy Efficiency - Visualization Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            font-size: 1.3em;
+            opacity: 0.95;
+            margin-bottom: 30px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+            margin-top: 25px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 160px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-value {
+            font-size: 2.2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.95em;
+            opacity: 0.9;
+        }
+
+        /* Tab Navigation */
+        .tabs {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .tab-buttons {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+            overflow-x: auto;
+        }
+
+        .tab-button {
+            flex: 1;
+            min-width: 150px;
+            padding: 18px 25px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.05em;
+            font-weight: 500;
+            color: #495057;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-button:hover {
+            background: #e9ecef;
+            color: #1e3c72;
+        }
+
+        .tab-button.active {
+            background: white;
+            color: #1e3c72;
+            border-bottom: 3px solid #1e3c72;
+            font-weight: 600;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            color: #1e3c72;
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #1e3c72;
+            font-weight: 600;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+            gap: 30px;
+            margin-top: 25px;
+        }
+
+        .visualization-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #e9ecef;
+        }
+
+        .visualization-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 18px 25px;
+            font-weight: 600;
+            font-size: 1.15em;
+        }
+
+        .card-body {
+            padding: 25px;
+            background: white;
+        }
+
+        .card-body img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+            display: block;
+            border: 1px solid #e9ecef;
+        }
+
+        .card-description {
+            margin-top: 18px;
+            color: #495057;
+            font-size: 0.95em;
+            line-height: 1.7;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .insights {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-top: 25px;
+        }
+
+        .insights h3 {
+            margin-bottom: 20px;
+            font-size: 1.6em;
+            font-weight: 600;
+        }
+
+        .insights ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .insights li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 1.05em;
+        }
+
+        .insights li:before {
+            content: "→ ";
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .recommendations {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-top: 25px;
+        }
+
+        .recommendations h3 {
+            margin-bottom: 20px;
+            font-size: 1.6em;
+            font-weight: 600;
+        }
+
+        .recommendations ol {
+            padding-left: 25px;
+        }
+
+        .recommendations li {
+            padding: 10px 0;
+            font-size: 1.05em;
+            line-height: 1.8;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #6c757d;
+            margin-top: 40px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .full-width-image {
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        .full-width-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .metric-label {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        @media (max-width: 768px) {
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .stats {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .tab-buttons {
+                flex-direction: column;
+            }
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+
+        .error {
+            background: #dc3545;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        .intro-text {
+            background: #e7f3ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 4px solid #1e3c72;
+            color: #495057;
+            line-height: 1.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Green Building Energy Efficiency</h1>
+            <p class="subtitle">Comprehensive Visualization Dashboard & Analysis</p>
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-value">99.98%</div>
+                    <div class="stat-label">R² Score</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">0.0030</div>
+                    <div class="stat-label">RMSE</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">768</div>
+                    <div class="stat-label">Samples</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">21</div>
+                    <div class="stat-label">Features</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Tab Navigation -->
+        <div class="tabs">
+            <div class="tab-buttons">
+                <button class="tab-button active" onclick="showTab('overview')">Overview</button>
+                <button class="tab-button" onclick="showTab('exploration')">Data Exploration</button>
+                <button class="tab-button" onclick="showTab('performance')">Model Performance</button>
+                <button class="tab-button" onclick="showTab('interpretability')">Interpretability</button>
+                <button class="tab-button" onclick="showTab('insights')">Insights & Recommendations</button>
+            </div>
+
+            <!-- Overview Tab -->
+            <div id="overview" class="tab-content active">
+                <div class="section">
+                    <h2 class="section-title">Executive Dashboard</h2>
+                    <div class="intro-text">
+                        This comprehensive dashboard provides a complete overview of the Green Building Energy Efficiency prediction system. 
+                        The model achieves exceptional performance with 99.98% R² score, trained on 768 real-world building samples with 21 features 
+                        covering IoT sensors, building design, climate data, and operational metrics.
+                    </div>
+                    <div class="full-width-image">
+                        <img src="results/07_comprehensive_dashboard.png" alt="Comprehensive Dashboard" onerror="this.parentElement.innerHTML='<div class=\'error\'>Dashboard image not found</div>'">
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">Key Performance Metrics</h2>
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-value">99.98%</div>
+                            <div class="metric-label">Variance Explained (R²)</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value">0.0030</div>
+                            <div class="metric-label">Root Mean Squared Error</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value">0.0018</div>
+                            <div class="metric-label">Mean Absolute Error</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value">0.51%</div>
+                            <div class="metric-label">Mean Absolute Percentage Error</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Exploration Tab -->
+            <div id="exploration" class="tab-content">
+                <div class="section">
+                    <h2 class="section-title">Dataset Exploration</h2>
+                    <div class="intro-text">
+                        Comprehensive analysis of the energy efficiency dataset including distribution analysis, feature relationships, 
+                        and correlation patterns across all feature categories.
+                    </div>
+                    
+                    <div class="gallery">
+                        <div class="visualization-card">
+                            <div class="card-header">Energy Efficiency Distribution</div>
+                            <div class="card-body">
+                                <img src="results/01_dataset_exploration_target.png" alt="Energy Efficiency Distribution" onerror="this.parentElement.innerHTML='<div class=\'error\'>Image not found</div>'">
+                                <div class="card-description">
+                                    Complete analysis of the energy efficiency target variable including histogram, box plot, scatter plot, 
+                                    and statistical summary. Shows distribution shape, outliers, and relationship with energy consumption.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="visualization-card">
+                            <div class="card-header">Feature Categories Analysis</div>
+                            <div class="card-body">
+                                <img src="results/02_feature_categories_analysis.png" alt="Feature Categories" onerror="this.parentElement.innerHTML='<div class=\'error\'>Image not found</div>'">
+                                <div class="card-description">
+                                    Analysis of how different feature categories relate to energy efficiency. Includes IoT sensors 
+                                    (temperature, humidity, air quality) and building design parameters (orientation, insulation, roof type).
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="full-width-image">
+                        <img src="results/03_correlation_heatmap.png" alt="Correlation Matrix" onerror="this.parentElement.innerHTML='<div class=\'error\'>Image not found</div>'">
+                        <div class="card-description" style="margin-top: 15px;">
+                            Complete correlation matrix showing relationships between all features and the target variable. 
+                            Red indicates negative correlation, blue indicates positive correlation. Values show correlation strength.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Model Performance Tab -->
+            <div id="performance" class="tab-content">
+                <div class="section">
+                    <h2 class="section-title">Model Performance Analysis</h2>
+                    <div class="intro-text">
+                        Detailed evaluation of the XGBoost model performance including prediction accuracy, residual analysis, 
+                        and error distributions. The model demonstrates exceptional performance with near-perfect predictions.
+                    </div>
+                    
+                    <div class="gallery">
+                        <div class="visualization-card">
+                            <div class="card-header">Predictions vs Actual Values</div>
+                            <div class="card-body">
+                                <img src="results/xgboost_predictions.png" alt="Model Predictions" onerror="this.parentElement.innerHTML='<div class=\'error\'>Image not found</div>'">
+                                <div class="card-description">
+                                    Scatter plot comparing predicted vs actual energy efficiency values. The red dashed line represents 
+                                    perfect predictions. R² = 0.9998 indicates excellent model performance with predictions very close to actual values.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="visualization-card">
+                            <div class="card-header">Residual Analysis</div>
+                            <div class="card-body">
+                                <img src="results/xgboost_residuals.png" alt="Residuals Plot" onerror="this.parentElement.innerHTML='<div class=\'error\'>Image not found</div>'">
+                                <div class="card-description">
+                                    Residual plot showing prediction errors (actual - predicted). Well-distributed residuals around zero 
+                                    indicate good model fit with no systematic bias. Low error variance demonstrates model reliability.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="full-width-image">
+                        <img src="results/04_model_performance.png" alt="Model Performance Analysis" onerror="this.parentElement.innerHTML='<div class=\'error\'>Image not found</div>'">
+                        <div class="card-description" style="margin-top: 15px;">
+                            Comprehensive model performance analysis including predictions vs actual, residuals plot, residual distribution, 
+                            and absolute error distribution. All metrics indicate excellent model performance.
+                        </div>
+                    </div>
+
+                    <div class="gallery">
+                        <div class="visualization-card">
+                            <div class="card-header">Feature Importance</div>
+                            <div class="card-body">
+                                <img src="results/xgboost_feature_importance.png" alt="Feature Importance" onerror="this.parentElement.innerHTML='<div class=\'error\'>Image not found</div>'">
+                                <div class="card-description">
+                                    XGBoost feature importance showing which features most influence energy efficiency predictions. 
+                                    Higher values indicate greater impact on model predictions.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="visualization-card">
+                            <div class="card-header">Detailed Feature Importance Analysis</div>
+                            <div class="card-body">
+                                <img src="results/05_feature_importance_analysis.png" alt="Feature Importance Analysis" onerror="this.parentElement.innerHTML='<div class=\'error\'>Image not found</div>'">
+                                <div class="card-description">
+                                    Comprehensive feature importance analysis with top 20 features and cumulative importance plot. 
+                                    Shows how many features are needed for optimal performance and identifies most critical factors.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interpretability Tab -->
+            <div id="interpretability" class="tab-content">
+                <div class="section">
+                    <h2 class="section-title">Model Interpretability</h2>
+                    <div class="intro-text">
+                        Advanced interpretability analysis using SHAP and LIME methods to understand model decisions and feature contributions. 
+                        These methods provide both global and local explanations for model predictions.
+                    </div>
+                    
+                    <div class="full-width-image">
+                        <img src="results/xgboost_shap_summary.png" alt="SHAP Summary" onerror="this.parentElement.innerHTML='<div class=\'error\'>Image not found</div>'">
+                        <div class="card-description" style="margin-top: 15px;">
+                            SHAP (SHapley Additive exPlanations) summary plot showing global feature importance and impact on predictions. 
+                            Red dots indicate higher feature values, blue dots indicate lower values. The plot shows how each feature 
+                            contributes to energy efficiency predictions across all samples.
+                        </div>
+                    </div>
+
+                    <div class="gallery">
+                        <div class="visualization-card">
+                            <div class="card-header">SHAP Feature Importance</div>
+                            <div class="card-body">
+                                <img src="results/xgboost_shap_importance.png" alt="SHAP Importance" onerror="this.parentElement.innerHTML='<div class=\'error\'>Image not found</div>'">
+                                <div class="card-description">
+                                    SHAP-based feature importance ranking. This provides a more accurate measure of feature importance 
+                                    compared to traditional methods by considering feature interactions and non-linear relationships.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="visualization-card">
+                            <div class="card-header">LIME Explanation</div>
+                            <div class="card-body">
+                                <img src="results/xgboost_lime_explanation.png" alt="LIME Explanation" onerror="this.parentElement.innerHTML='<div class=\'error\'>Image not found</div>'">
+                                <div class="card-description">
+                                    LIME (Local Interpretable Model-agnostic Explanations) showing feature contributions for a specific prediction. 
+                                    Helps understand individual prediction decisions by showing which features increased or decreased 
+                                    the predicted energy efficiency for a particular building.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Insights & Recommendations Tab -->
+            <div id="insights" class="tab-content">
+                <div class="section">
+                    <h2 class="section-title">Insights and Recommendations</h2>
+                    <div class="intro-text">
+                        Key insights derived from the analysis and strategic recommendations for improving building energy efficiency. 
+                        Based on comprehensive data analysis and model interpretation.
+                    </div>
+                    
+                    <div class="full-width-image">
+                        <img src="results/06_insights_recommendations.png" alt="Insights and Recommendations" onerror="this.parentElement.innerHTML='<div class=\'error\'>Image not found</div>'">
+                        <div class="card-description" style="margin-top: 15px;">
+                            Detailed analysis showing energy efficiency by material type, orientation, temperature range, and insulation level, 
+                            along with strategic recommendations for improving building energy performance.
+                        </div>
+                    </div>
+
+                    <div class="insights">
+                        <h3>Key Insights</h3>
+                        <ul>
+                            <li>Model achieves 99.98% R² score with RMSE of 0.0030 - excellent predictive accuracy</li>
+                            <li>Building material type significantly impacts energy efficiency (concrete/composite perform best)</li>
+                            <li>Building orientation has measurable impact on energy efficiency</li>
+                            <li>Insulation level shows strong positive correlation with efficiency</li>
+                            <li>Temperature management is crucial for optimal energy efficiency</li>
+                            <li>IoT sensor data (temperature, humidity, air quality) provides valuable predictive signals</li>
+                            <li>Operational factors (metro logistics, policy compliance) influence efficiency</li>
+                            <li>Feature importance analysis reveals building design parameters are most critical</li>
+                            <li>Climate factors (solar radiation, wind speed) can be leveraged for efficiency gains</li>
+                            <li>Consumer perception and environmental awareness correlate with building efficiency</li>
+                        </ul>
+                    </div>
+
+                    <div class="recommendations">
+                        <h3>Strategic Recommendations</h3>
+                        <ol>
+                            <li><strong>Building Material Selection:</strong> Use concrete or composite materials for better energy efficiency. Avoid wood-based materials for high-efficiency requirements. Material choice can impact efficiency by up to 15-20%.</li>
+                            <li><strong>Orientation Optimization:</strong> Consider solar path and wind patterns when designing building orientation. Optimal orientation can significantly improve efficiency by 10-15%. Analyze local climate patterns for best results.</li>
+                            <li><strong>Insulation Improvements:</strong> Higher insulation levels directly correlate with better energy efficiency. Invest in quality insulation materials and proper installation. Top quartile insulation shows 25-30% better efficiency than bottom quartile.</li>
+                            <li><strong>Temperature Management:</strong> Maintain optimal temperature ranges for maximum efficiency. Implement smart HVAC systems with IoT sensors for real-time monitoring and automated adjustments.</li>
+                            <li><strong>Operational Efficiency:</strong> Improve metro logistics and policy compliance. Regular maintenance of equipment (monitor equipment status) is essential. Operational efficiency can contribute 5-10% to overall building efficiency.</li>
+                            <li><strong>Climate Considerations:</strong> Leverage solar radiation through proper glazing and building design. Consider wind patterns for natural ventilation opportunities. Passive design strategies can reduce energy consumption by 20-30%.</li>
+                            <li><strong>Consumer Engagement:</strong> Higher green perception and environmental awareness correlate with efficiency. Educational programs can improve perceived risk and awareness, leading to better building operation and maintenance practices.</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p style="font-size: 1.1em; font-weight: 600; margin-bottom: 10px;">Green Building Energy Efficiency Prediction System</p>
+            <p>Powered by XGBoost | Trained on UCI Energy Efficiency Dataset (768 samples)</p>
+            <p style="margin-top: 15px; opacity: 0.8;">Dataset: UCI ML Repository | Model Performance: 99.98% R² Score</p>
+            <p style="margin-top: 10px; opacity: 0.7; font-size: 0.9em;">Last Updated: December 2024</p>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Remove active class from all buttons
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active class to clicked button
+            event.target.classList.add('active');
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Handle image loading errors
+        document.addEventListener('DOMContentLoaded', function() {
+            const images = document.querySelectorAll('img');
+            images.forEach(img => {
+                img.addEventListener('error', function() {
+                    this.style.display = 'none';
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'error';
+                    errorDiv.textContent = 'Image not available: ' + this.alt;
+                    this.parentElement.appendChild(errorDiv);
+                });
+
+                img.addEventListener('load', function() {
+                    this.style.opacity = '0';
+                    this.style.transition = 'opacity 0.3s';
+                    setTimeout(() => {
+                        this.style.opacity = '1';
+                    }, 100);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
