@@ -38,11 +38,12 @@ ENV/
 *.ipynb
 
 # Data files
-data/*.csv
 data/*.pkl
 data/*.h5
 data/*.hdf5
 !data/.gitkeep
+# Allow CSV files for GitHub Pages (dataset)
+!data/uci_energy_efficiency.csv
 
 # Model files
 models/*.pkl
@@ -52,11 +53,12 @@ models/*.hdf5
 !models/.gitkeep
 
 # Results
-results/*.png
 results/*.pdf
 results/*.txt
 results/*.json
 !results/.gitkeep
+# Allow PNG files for GitHub Pages
+!results/*.png
 
 # Logs
 *.log
